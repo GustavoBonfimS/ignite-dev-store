@@ -1,11 +1,34 @@
 import Image from "next/image";
 
-function ProductDetails() {
+import { api } from "@/data/api";
+import { Product } from "@/data/types/products";
+
+interface ProductPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+async function getProductBySlug(slug: string): Promise<Product> {
+  const response = await api(`/products/${slug}`, {
+    next: {
+      revalidate: 60 * 60, // 1 hour
+    },
+  });
+
+  const product = await response.json();
+
+  return product;
+}
+
+async function ProductDetails({ params }: ProductPageProps) {
+  const product = await getProductBySlug(params.slug);
+
   return (
     <div className="relative grid max-h-[860px] grid-cols-3">
       <div className="col-span-2 overflow-hidden ">
         <Image
-          src="/camiseta-dowhile-2022.png"
+          src={product.image}
           alt="product image"
           width={1000}
           height={1000}
@@ -14,19 +37,26 @@ function ProductDetails() {
       </div>
 
       <div className="flex flex-col justify-center px-12">
-        <h1 className="text-3xl font-bold leading-tight">
-          Moletom never stop learning
-        </h1>
+        <h1 className="text-3xl font-bold leading-tight">{product.title}</h1>
 
         <p className="mt-2 leading-relaxed text-zinc-400">
-          Moletom fabricado com 88% de algodão e 12% de poliéster.
+          {product.description}
         </p>
 
         <div className="mt-8 flex items-center gap-3">
           <span className="inline-block rounded-full bg-violet-500 px-5 py-2.5 font-semibold">
-            129
+            {product.price.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
           </span>
-          <span className="text-sm text-zinc-400">12x sem juros de 10</span>
+          <span className="text-sm text-zinc-400">
+            12x sem juros de{" "}
+            {(product.price / 12).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </span>
         </div>
 
         <div className="mt-8 space-y-4">
