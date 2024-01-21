@@ -1,13 +1,16 @@
 import { ReactNode } from "react";
 
 import Header from "@/components/header";
+import { CartProvider } from "@/contexts/cart-context";
 
 function StoreLayout(props: { children: ReactNode }) {
   return (
-    <div className="mx-auto grid min-h-screen w-full max-w-[1600px] grid-rows-[min-content_max-content] gap-5 p-8">
-      <Header />
-      {props.children}
-    </div>
+    <CartProvider>
+      <div className="mx-auto grid min-h-screen w-full max-w-[1600px] grid-rows-[min-content_max-content] gap-5 p-8">
+        <Header />
+        {props.children}
+      </div>
+    </CartProvider>
   );
 }
 
