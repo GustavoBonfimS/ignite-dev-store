@@ -17,6 +17,7 @@ function SearchForm() {
     const formData = new FormData(e.currentTarget);
 
     const data = Object.fromEntries(formData);
+    console.log(data);
 
     const query = data.q;
 
@@ -37,6 +38,8 @@ function SearchForm() {
         placeholder="Buscar produtos"
         className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-500"
         defaultValue={q ?? ""}
+        name="q"
+        required
       />
     </form>
   );
